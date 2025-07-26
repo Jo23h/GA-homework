@@ -17,7 +17,7 @@ const hungerStatEl = document.querySelector('#hunger-stat')
 const sleepinessStatEl = document.querySelector('#sleepiness-stat')
 
 const playBtnEl = document.querySelector('#play')
-const eatBtnEl = document.querySelector('#eat')
+const eatBtnEl = document.querySelector('#feed')
 const sleepBtnEl = document.querySelector('#sleep')
 
 const gameMessageEl = document.querySelector('#message')
@@ -33,7 +33,9 @@ const init = () => {
 }
 
 const render = () => {
-    boredomStatEl.textContent = state.boredom  
+    console.log('rendering')
+    boredomStatEl.textContent = state.boredom
+    console.dir(boredomStatEl)
     hungerStatEl.textContent = state.hunger
     sleepinessStatEl.textContent = state.sleepiness
     if (gameOver === true) {
@@ -53,6 +55,21 @@ const updateStates = () => {
     
 }
 
+const playBtnClick = () => {
+    state.boredom = 0 
+    render()
+}
+
+const eatBtnClick = () => {
+    state.hunger = 0 
+    render()
+}
+
+const sleepBtnClick = () => {
+    state.sleepiness = 0 
+    render()
+}
+
 // Why declare a function instead of using the function keyword?
 
 const checkGameOver = () => {
@@ -63,4 +80,9 @@ const checkGameOver = () => {
 }
 
 /*----------------------------- Event Listeners -----------------------------*/
+playBtnEl.addEventListener('click', playBtnClick)
+eatBtnEl.addEventListener('click', eatBtnClick)
+sleepBtnEl.addEventListener('click', sleepBtnClick)
+restartBtnEl.addEventListener('click', init)
 
+// init()
