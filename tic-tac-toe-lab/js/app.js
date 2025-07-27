@@ -79,7 +79,7 @@ function handleClick(event){
     const index = parseInt(event.target.id)
    
     if (board[index] !== '' || winner) return
-    placePiece(event)
+    placePiece(index)
     checkForWinner()
     checkForTie()
     switchPlayerTurn()
