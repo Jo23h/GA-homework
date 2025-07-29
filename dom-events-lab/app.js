@@ -14,11 +14,9 @@ buttons.forEach (button => {
             firstNumber = ''
             operator = ''
             secondNumber = ''
-            console.log('cleared')
         } 
         
         if (buttonValue === '='){
-             console.log('Equals pressed')
             if (firstNumber && operator && secondNumber){
                 let num1 = Number(firstNumber)
                 let num2 = Number(secondNumber)
@@ -38,10 +36,16 @@ buttons.forEach (button => {
         } 
 
         if(buttonValue === '+' || buttonValue === '-' || buttonValue === '*' || buttonValue === '/'){
-            operator = buttonValue
-            console.log('pressed',operator)
+            if(firstNumber && !secondNumber){
+                operator = buttonValue
+            }
+        } else if (firstNumber === ''){
+            firstNumber = buttonValue
+        } else {
+            secondNumber = buttonValue
         }
-         
+       
+        console.log(firstNumber,secondNumber,operator)
     })
 })
 
