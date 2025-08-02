@@ -31,7 +31,7 @@ buttons.forEach (button => {
                 } else if (operator === '*'){
                     result = num1*num2
                 }
-                console.log('Result:', result)
+                console.log(result)
             }
         } 
 
@@ -39,7 +39,7 @@ buttons.forEach (button => {
             if(firstNumber && !secondNumber){
                 operator = buttonValue
             }
-        } else if (firstNumber === ''){
+        } else if (!operator){
             firstNumber = buttonValue
         } else {
             secondNumber = buttonValue
@@ -48,7 +48,4 @@ buttons.forEach (button => {
         console.log(firstNumber,secondNumber,operator)
     })
 })
-
-
-
 
