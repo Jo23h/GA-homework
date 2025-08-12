@@ -1,5 +1,8 @@
 body {
     margin: 0;
     background-color: black;
+    align-items: center;
+    display: flex;
+    justify-content: center;
     height: 100vh;
 }

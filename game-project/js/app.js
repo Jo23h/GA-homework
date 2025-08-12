@@ -1,8 +1,8 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+canvas.width = 1024
+canvas.height = 576
 
 // Create Player template
 class Player{
@@ -110,10 +110,10 @@ let ground = new Image()
 ground.src = './img/testing.png'
 
 let platforms = [
-    new Platform({x: 200, y: 100, image: platformSmall}),
-    new Platform({x: 500, y: 200, image: platformSmall}),
-    new Platform({x:10, y:680, image: ground}),
-    new Platform({x:600, y:680, image: ground})
+    new Platform({x: 200, y: 300, image: platformSmall}),
+    new Platform({x: 500, y: 400, image: platformSmall}),
+    new Platform({x:0, y:500, image: ground}),
+    new Platform({x:900, y:500, image: ground})
 ]
 
 // Audio
@@ -138,9 +138,8 @@ function animate(){
     })
     player.refresh()
 
-
     // Enable Player left and right movement and stop Player from when key is not pressed
-    if (keys.right.pressed === true && player.position.x < 1000){
+    if (keys.right.pressed === true && player.position.x < 500){
         player.velocity.x = 5
     } else if (keys.left.pressed === true && player.position.x > 100){
         player.velocity.x = -5
@@ -175,18 +174,20 @@ function animate(){
         audio.play()
     }
     })  
+
     // Lose condition: if Player falls off the map, Player loses!
     if (player.position.y > canvas.height){
         console.log('You lose!')
         reset()
+        return
     }
 }
 
-// Initialize/Reset game state
+// Reset game 
 function reset() {
     // Reset player position and velocity
-    player.position.x = 100
-    player.position.y = 100
+    player.position.x = 10
+    player.position.y = 10
     player.velocity.x = 0
     player.velocity.y = 1
 
@@ -195,7 +196,9 @@ function reset() {
     platforms[0].position.y = 100
     platforms[1].position.x = 500
     platforms[1].position.y = 200
-    platforms[2].position.x = 10
+    platforms[2].position.x = 0
+    platforms[2].position.y = 680
+    platforms[2].position.x = 900
     platforms[2].position.y = 680
 
     // Reset distance traveled
