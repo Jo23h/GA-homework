@@ -63,6 +63,8 @@ class Platform{
     }
 }
 
+// Create background
+
 // Controls
 const keys = {
     right: {
@@ -100,31 +102,37 @@ document.addEventListener('keydown', event => {
 
 
 // Create Player (1)
-let player = new Player()
+const player = new Player()
 
 // Create Platforms
-let platformSmall = new Image()
+const platformSmall = new Image()
 platformSmall.src = './img/platform.png'
 
-let ground = new Image()
-ground.src = './img/testing.png'
+const ground = new Image()
+ground.src = './img/ground.png'
 
-let platforms = [
+const testing = new Image()
+testing.src = './img/testing.png'
+
+// Wait for image to load before creating platforms
+// platformSmall.onload = () => {
+//     console.log('Platform image loaded successfully')
+// }
+// platformSmall.onerror = () => {
+//     console.error('Error loading platform image')
+// }
+
+const platforms = [
     new Platform({x: 200, y: 100, image: platformSmall}),
     new Platform({x: 500, y: 200, image: platformSmall}),
-    new Platform({x:10, y:680, image: ground}),
-    new Platform({x:600, y:680, image: ground})
+    new Platform({x:10, y:680, image: testing}),
 ]
 
-// Audio
-const audio = new Audio('./sound/victoryFanfare.mp3')
-
 // Establish gravity pull
-let gravity = 0.5
+const gravity = 0.5
 
 // Create win condition
 let distanceTravel = 0
-let gameWon = false
 
 // Properties that change over time
 function animate(){
@@ -169,37 +177,13 @@ function animate(){
     }
     
     // Win condition: if Player reachers x = 1200, Player wins!
-    if (distanceTravel >= 500 && gameWon === false){
+    if (distanceTravel >= 1200){
         console.log('You win!')
-        gameWon = true
-        audio.play()
     }
     })  
     // Lose condition: if Player falls off the map, Player loses!
     if (player.position.y > canvas.height){
         console.log('You lose!')
-        reset()
     }
 }
-
-// Initialize/Reset game state
-function reset() {
-    // Reset player position and velocity
-    player.position.x = 100
-    player.position.y = 100
-    player.velocity.x = 0
-    player.velocity.y = 1
-
-    // Reset platform positions
-    platforms[0].position.x = 200
-    platforms[0].position.y = 100
-    platforms[1].position.x = 500
-    platforms[1].position.y = 200
-    platforms[2].position.x = 10
-    platforms[2].position.y = 680
-
-    // Reset distance traveled
-    distanceTravel = 0
-}
-
 animate()
