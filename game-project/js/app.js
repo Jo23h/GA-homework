@@ -40,27 +40,30 @@ class Player{
             this.velocity.y += gravity
         } 
         // Stops Player from falling off the screen
-        else (this.velocity.y = 0)
+        // else (this.velocity.y = 0)
     }
 }
 
-// Create Plaform
+// Create Platform
 class Platform{
-    constructor({x,y}){
+    constructor({x,y,image}){
         this.position = {
             x: x,
             y: y,
         }
 
-        this.width = 300
-        this.height = 20
+        this.image = image
+        this.width = image.width
+        this.height = image.height
+        
     }
 
     draw(){
-        c.fillStyle = 'green'
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
+        c.drawImage(this.image, this.position.x, this.position.y)
     }
 }
+
+// Create background
 
 // Controls
 const keys = {
@@ -102,21 +105,47 @@ document.addEventListener('keydown', event => {
 const player = new Player()
 
 // Create Platforms
-const platforms = [new Platform({x: 200, y:100}), new Platform({x: 500, y: 200})]
+const platformSmall = new Image()
+platformSmall.src = './img/platform.png'
+
+const ground = new Image()
+ground.src = './img/ground.png'
+
+const testing = new Image()
+testing.src = './img/testing.png'
+
+// Wait for image to load before creating platforms
+// platformSmall.onload = () => {
+//     console.log('Platform image loaded successfully')
+// }
+// platformSmall.onerror = () => {
+//     console.error('Error loading platform image')
+// }
+
+const platforms = [
+    new Platform({x: 200, y: 100, image: platformSmall}),
+    new Platform({x: 500, y: 200, image: platformSmall}),
+    new Platform({x:10, y:680, image: testing}),
+]
 
 // Establish gravity pull
 const gravity = 0.5
+
+// Create win condition
+let distanceTravel = 0
 
 // Properties that change over time
 function animate(){
 
     // Create gravity: Refresh window by clearing the canvas -> update Player's position 
     requestAnimationFrame(animate)
-    c.clearRect(0,0, canvas.width, canvas.height)
+    c.fillStyle = 'white'
+    c.fillRect(0,0, canvas.width, canvas.height)
     platforms.forEach(platform => {
         platform.draw()
     })
     player.refresh()
+
 
     // Enable Player left and right movement and stop Player from when key is not pressed
     if (keys.right.pressed === true && player.position.x < 1000){
@@ -127,10 +156,12 @@ function animate(){
 
     // Scroll map
     if (keys.right.pressed === true){
+        distanceTravel += 5
         platforms.forEach(platform => {
         platform.position.x -= 5
     })
     } if (keys.left.pressed === true){
+        distanceTravel -= 5
         platforms.forEach(platform => {
         platform.position.x += 5
         })
@@ -144,6 +175,15 @@ function animate(){
         player.position.x <= platform.position.x + platform.width) {
         player.velocity.y = 0
     }
+    
+    // Win condition: if Player reachers x = 1200, Player wins!
+    if (distanceTravel >= 1200){
+        console.log('You win!')
+    }
     })  
+    // Lose condition: if Player falls off the map, Player loses!
+    if (player.position.y > canvas.height){
+        console.log('You lose!')
+    }
 }
 animate()
