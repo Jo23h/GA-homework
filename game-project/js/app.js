@@ -1,7 +1,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
-canvas.width = 1024
+canvas.width = 1064
 canvas.height = 576
 
 // Create Player template
@@ -10,10 +10,11 @@ class Player{
 
         // Static position
         this.position = {
-            x:100,
-            y:100,
+            x:50,
+            y:50,
         }
         // Acceleration
+        this.speed = 5
         this.velocity = {
             x:0,
             y:1,
@@ -46,6 +47,22 @@ class Player{
 
 // Create Platform
 class Platform{
+    constructor({x,y,image}){
+        this.position = {
+            x: x,
+            y: y,
+        }
+        this.image = image
+        this.width = image.width
+        this.height = image.height
+    }
+    draw(){
+        c.drawImage(this.image, this.position.x, this.position.y)
+    }
+}
+
+// Background (no collision detectation)
+class Background{
     constructor({x,y,image}){
         this.position = {
             x: x,
@@ -104,35 +121,61 @@ let player = new Player()
 
 // Create Platforms
 let platformSmall = new Image()
-platformSmall.src = './img/platform.png'
+platformSmall.src = './img/small.png'
+
+let platformMed = new Image()
+platformMed.src = './img/medium.png'
 
 let ground = new Image()
-ground.src = './img/testing.png'
+ground.src = './img/floor.png'
 
-let platforms = [
-    new Platform({x: 200, y: 300, image: platformSmall}),
-    new Platform({x: 500, y: 400, image: platformSmall}),
-    new Platform({x:0, y:500, image: ground}),
-    new Platform({x:900, y:500, image: ground})
+const platforms = [
+    new Platform({x: 300, y:400, image: platformSmall}),
+    new Platform({x: 450, y:300, image: platformSmall}),
+    new Platform({x: 600, y:200, image: platformSmall}),
+    new Platform({x: 800, y:200, image: platformSmall}),
+    new Platform({x: 1000, y:200, image: platformMed}),
+    new Platform({x:-400, y:500, image: ground}),
 ]
 
+// Create background image
+const backgroundImg = new Image()
+backgroundImg.src = './img/background.png'
+
+const background = 
+    new Background({
+        x: 0,
+        y: 0,
+        image: backgroundImg
+    })
+
 // Audio
-const audio = new Audio('./sound/victoryFanfare.mp3')
+const audio = new Audio('./sound/bgm.mp3')
 
 // Establish gravity pull
-let gravity = 0.5
+let gravity = 1.7
 
 // Create win condition
 let distanceTravel = 0
-let gameWon = false
+let gameOver = false
 
 // Properties that change over time
 function animate(){
 
+    audio.play()
+
+    // // Check if game is lost
+    if (gameOver){
+        return
+    }
+
     // Create gravity: Refresh window by clearing the canvas -> update Player's position 
     requestAnimationFrame(animate)
-    c.fillStyle = 'white'
-    c.fillRect(0,0, canvas.width, canvas.height)
+    
+    // Draw background
+    background.draw()
+
+    // Draw platforms and player
     platforms.forEach(platform => {
         platform.draw()
     })
@@ -140,21 +183,21 @@ function animate(){
 
     // Enable Player left and right movement and stop Player from when key is not pressed
     if (keys.right.pressed === true && player.position.x < 500){
-        player.velocity.x = 5
+        player.velocity.x = player.speed
     } else if (keys.left.pressed === true && player.position.x > 100){
-        player.velocity.x = -5
+        player.velocity.x = -player.speed
     } else (player.velocity.x = 0)
 
     // Scroll map
     if (keys.right.pressed === true){
-        distanceTravel += 5
+        distanceTravel += player.speed
         platforms.forEach(platform => {
-        platform.position.x -= 5
-    })
+            platform.position.x -= player.speed
+        })
     } if (keys.left.pressed === true){
-        distanceTravel -= 5
+        distanceTravel -= player.speed
         platforms.forEach(platform => {
-        platform.position.x += 5
+            platform.position.x += player.speed
         })
     }
 
@@ -164,44 +207,47 @@ function animate(){
         player.position.y + player.height + player.velocity.y >= platform.position.y &&
         player.position.x + player.width >= platform.position.x &&
         player.position.x <= platform.position.x + platform.width) {
-        player.velocity.y = 0
-    }
-    
-    // Win condition: if Player reachers x = 1200, Player wins!
-    if (distanceTravel >= 500 && gameWon === false){
+            player.velocity.y = 0
+        }
+    })
+
+    // Win condition: if Player reaches x = 500, Player wins!
+    if (distanceTravel >= 700 && !gameOver) {
         console.log('You win!')
-        gameWon = true
-        audio.play()
+        gameOver = true
     }
-    })  
 
     // Lose condition: if Player falls off the map, Player loses!
     if (player.position.y > canvas.height){
         console.log('You lose!')
         reset()
-        return
     }
 }
 
 // Reset game 
 function reset() {
     // Reset player position and velocity
-    player.position.x = 10
-    player.position.y = 10
+    player.position.x = 50
+    player.position.y = 50
     player.velocity.x = 0
     player.velocity.y = 1
 
     // Reset platform positions
-    platforms[0].position.x = 200
-    platforms[0].position.y = 100
-    platforms[1].position.x = 500
-    platforms[1].position.y = 200
-    platforms[2].position.x = 0
-    platforms[2].position.y = 680
-    platforms[2].position.x = 900
-    platforms[2].position.y = 680
+    platforms[0].position.x = 300
+    platforms[0].position.y = 400
+    platforms[1].position.x = 450
+    platforms[1].position.y = 300
+    platforms[2].position.x = 600
+    platforms[2].position.y = 200
+    platforms[3].position.x = 800
+    platforms[3].position.y = 200
+    platforms[4].position.x = 1000
+    platforms[4].position.y = 200
+    platforms[5].position.x = -400
+    platforms[5].position.y = 500
 
-    // Reset distance traveled
+    // Reset game state
+    gameOver = false
     distanceTravel = 0
 }
 
