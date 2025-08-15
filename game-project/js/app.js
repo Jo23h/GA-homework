@@ -80,6 +80,25 @@ class Background{
     }
 }
 
+// Goal (no collision detectation)
+class Goal{
+    constructor({x,y,image}){
+        this.position = {
+            x: x,
+            y: y,
+        }
+
+        this.image = image
+        this.width = image.width
+        this.height = image.height
+        
+    }
+
+    draw(){
+        c.drawImage(this.image, this.position.x, this.position.y)
+    }
+}
+
 // Controls
 const keys = {
     right: {
@@ -102,7 +121,7 @@ document.addEventListener('keyup', event => {
 
 
 document.addEventListener('keydown', event => {
-     if (event.key === 'w'){ 
+     if (event.key === 'w' && !event.repeat){ 
         player.velocity.y -= 20
     }
 
@@ -126,16 +145,20 @@ platformSmall.src = './img/small.png'
 let platformMed = new Image()
 platformMed.src = './img/medium.png'
 
-let ground = new Image()
-ground.src = './img/floor.png'
+let floor = new Image()
+floor.src = './img/floor.png'
+
+let goal = new Image()
+goal.src = './img/portal.png'
 
 const platforms = [
     new Platform({x: 300, y:400, image: platformSmall}),
     new Platform({x: 450, y:300, image: platformSmall}),
     new Platform({x: 600, y:200, image: platformSmall}),
     new Platform({x: 800, y:200, image: platformSmall}),
-    new Platform({x: 1000, y:200, image: platformMed}),
-    new Platform({x:-400, y:500, image: ground}),
+    new Platform({x: 1000, y:300, image: platformMed}),
+    new Platform({x:-400, y:500, image: floor}),
+    new Platform({x:1155, y:170, image: goal})
 ]
 
 // Create background image
@@ -159,13 +182,15 @@ let gravity = 1.7
 let distanceTravel = 0
 let gameOver = false
 
+
+
 // Properties that change over time
 function animate(){
 
     audio.play()
+    audio.loop = true
 
-    // // Check if game is lost
-    if (gameOver){
+    if(gameOver){
         return
     }
 
@@ -194,11 +219,14 @@ function animate(){
         platforms.forEach(platform => {
             platform.position.x -= player.speed
         })
+        background.position.x -= player.speed * 0.5
+
     } if (keys.left.pressed === true){
         distanceTravel -= player.speed
         platforms.forEach(platform => {
             platform.position.x += player.speed
         })
+        background.position.x += player.speed * 0.5
     }
 
     // Collision detection
@@ -211,10 +239,15 @@ function animate(){
         }
     })
 
-    // Win condition: if Player reaches x = 500, Player wins!
+    // Win condition: if Player reaches x = 700, Player wins!
     if (distanceTravel >= 700 && !gameOver) {
         console.log('You win!')
         gameOver = true
+        c.fillStyle = 'white'
+        c.font = '48px Arial'
+        c.textAlign = 'center'
+        c.fillText('You win!', canvas.width / 2, canvas.height / 2)
+        player.velocity.x = 0
     }
 
     // Lose condition: if Player falls off the map, Player loses!
@@ -222,6 +255,7 @@ function animate(){
         console.log('You lose!')
         reset()
     }
+
 }
 
 // Reset game 
@@ -242,9 +276,11 @@ function reset() {
     platforms[3].position.x = 800
     platforms[3].position.y = 200
     platforms[4].position.x = 1000
-    platforms[4].position.y = 200
+    platforms[4].position.y = 300
     platforms[5].position.x = -400
     platforms[5].position.y = 500
+    platforms[6].position.x = 1155
+    platforms[6].position.y = 170
 
     // Reset game state
     gameOver = false
@@ -252,3 +288,5 @@ function reset() {
 }
 
 animate()
+
+
