@@ -1,6 +1,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
+// Adjust canvas dimensions 
 canvas.width = 1064
 canvas.height = 576
 
@@ -13,7 +14,7 @@ class Player{
             x:50,
             y:50,
         }
-        // Acceleration
+        // Acceleration - speed controls how fast player moves along x-axis and velocity is for gravity
         this.speed = 5
         this.velocity = {
             x:0,
@@ -30,7 +31,7 @@ class Player{
         c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 
-    // Updating Player's position
+    // Update the Player's property over time 
     refresh(){
         this.position.y += this.velocity.y
         this.position.x += this.velocity.x
@@ -182,8 +183,6 @@ let gravity = 1.7
 let distanceTravel = 0
 let gameOver = false
 
-
-
 // Properties that change over time
 function animate(){
 
@@ -207,6 +206,7 @@ function animate(){
     player.refresh()
 
     // Enable Player left and right movement and stop Player from when key is not pressed
+    // Platform will only start moving once player.position.x < 500 or x > 100
     if (keys.right.pressed === true && player.position.x < 500){
         player.velocity.x = player.speed
     } else if (keys.left.pressed === true && player.position.x > 100){
@@ -247,7 +247,6 @@ function animate(){
         c.font = '48px Arial'
         c.textAlign = 'center'
         c.fillText('You win!', canvas.width / 2, canvas.height / 2)
-        player.velocity.x = 0
     }
 
     // Lose condition: if Player falls off the map, Player loses!
