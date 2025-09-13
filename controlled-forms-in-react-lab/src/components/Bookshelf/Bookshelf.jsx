@@ -40,7 +40,7 @@ function Bookshelf() {
                     />
                     <label htmlFor="author">Author</label>
                     <input
-                        id = "title"
+                        id = "author"
                         name = "author"
                         value ={newBook.author}
                         onChange = {handleInputChange}
