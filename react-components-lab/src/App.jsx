@@ -1,6 +1,4 @@
-import React from 'react'
 import WeatherForecast from "./components/WeatherForecast.jsx"
-import WeatherData from './components/WeatherData.jsx';
 
 function App() {
 
@@ -47,14 +45,9 @@ function App() {
       <h1>Local Weather</h1>
       <section>
         {weatherForecasts.map((forecast)=> (
-          <div>
             <WeatherForecast 
               forecast = {forecast}
             />
-            <WeatherData 
-              forecast = {forecast}
-            />
-          </div>
         ))}
       </section>
     </>

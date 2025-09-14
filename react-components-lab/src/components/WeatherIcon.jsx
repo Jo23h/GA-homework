@@ -1,6 +1,6 @@
-function WeatherIcon({img, imgAlt}) {
+function WeatherIcon({icon}) {
   return (
-    <img src = {img} alt = {imgAlt}/>
+    <img src = {icon.img} alt = {icon.imgAlt}/>
   )
 }
 
